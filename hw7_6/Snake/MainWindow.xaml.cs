@@ -15,6 +15,11 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using static Snake.MainWindow;
 
+
+//Вариант 6.
+//Добавить «телепорты». На карте появляются точки А и А'. При попадании головы змеи в точку А, она появляется в точке A' и наоборот.
+
+
 namespace Snake
 {
     /// <summary>
@@ -47,9 +52,9 @@ namespace Snake
             //создаем поле 300х300 пикселей
             field = new Entity(600, 600, "pack://application:,,,/Resources/snake.png");
 
-            //создаем таймер срабатывающий раз в 300 мс
+            //создаем таймер срабатывающий раз в 250 мс
             moveTimer = new DispatcherTimer();
-            moveTimer.Interval = new TimeSpan(0, 0, 0, 0, 300);
+            moveTimer.Interval = new TimeSpan(0, 0, 0, 0, 250);
             moveTimer.Tick += new EventHandler(moveTimer_Tick);
 
         }
