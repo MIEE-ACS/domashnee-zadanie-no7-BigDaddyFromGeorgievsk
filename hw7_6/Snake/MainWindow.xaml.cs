@@ -35,14 +35,14 @@ namespace Snake
         //таймер по которому 
         DispatcherTimer moveTimer;
         //телепорт
-        Teleport teleport1;
-        Teleport teleport2;
-        
+        Teleport1 teleport1;
+        Teleport2 teleport2;
+
         //конструктор формы, выполняется при запуске программы
         public MainWindow()
         {
             InitializeComponent();
-            
+
             snake = new List<PositionedEntity>();
             //создаем поле 300х300 пикселей
             field = new Entity(600, 600, "pack://application:,,,/Resources/snake.png");
@@ -51,7 +51,7 @@ namespace Snake
             moveTimer = new DispatcherTimer();
             moveTimer.Interval = new TimeSpan(0, 0, 0, 0, 300);
             moveTimer.Tick += new EventHandler(moveTimer_Tick);
-            
+
         }
 
         //метод перерисовывающий экран
@@ -125,7 +125,7 @@ namespace Snake
             if (head.x == teleport1.x && head.y == teleport1.y)
             {
                 //в зависимости от напралвения входа меняем свдвиг
-                switch(head.direction)
+                switch (head.direction)
                 {
                     case Head.Direction.LEFT:
                         head.x = teleport2.x - 40;
@@ -144,7 +144,7 @@ namespace Snake
                         head.y = teleport2.y - 40;
                         break;
                 }
-                
+
             }
 
             //проверяем контакт с телепортом 2
@@ -207,7 +207,7 @@ namespace Snake
             canvas1.Children.Clear();
             // скрываем надпись "Game Over"
             tbGameOver.Visibility = Visibility.Hidden;
-            
+
             // добавляем поле на канвас
             canvas1.Children.Add(field.image);
             // создаем новое яблоко и добавлем его
@@ -218,10 +218,9 @@ namespace Snake
             snake.Add(head);
             canvas1.Children.Add(head.image);
             //создаём телепорты
-            teleport1 = new Teleport(snake);
+            teleport1 = new Teleport1(snake);
             canvas1.Children.Add(teleport1.image);
-            Thread.SpinWait(100);
-            teleport2 = new Teleport(snake);
+            teleport2 = new Teleport2(snake);
             //teleport2.image = apple.image;
             canvas1.Children.Add(teleport2.image);
 
@@ -230,12 +229,12 @@ namespace Snake
             UpdateField();
 
         }
-        
+
         public class Entity
         {
             protected int m_width;
             protected int m_height;
-            
+
             Image m_image;
             public Entity(int w, int h, string image)
             {
@@ -342,7 +341,8 @@ namespace Snake
 
             Direction m_direction;
 
-            public Direction direction {
+            public Direction direction
+            {
                 set
                 {
                     m_direction = value;
@@ -398,11 +398,11 @@ namespace Snake
             }
         }
 
-        public class Teleport : PositionedEntity
+        public class Teleport1 : PositionedEntity
         {
             List<PositionedEntity> m_tp;
-            public Teleport(List<PositionedEntity> tp)
-                :base(0, 0, 40, 40, "pack://application:,,,/Resources/teleport.png")
+            public Teleport1(List<PositionedEntity> tp)
+                : base(0, 0, 40, 40, "pack://application:,,,/Resources/teleport.png")
             {
                 m_tp = tp;
                 move();
@@ -429,5 +429,41 @@ namespace Snake
 
             }
         }
+
+
+        public class Teleport2 : PositionedEntity
+        {
+            List<PositionedEntity> m_tp;
+            public Teleport2(List<PositionedEntity> tp)
+                : base(0, 0, 40, 40, "pack://application:,,,/Resources/teleport.png")
+            {
+                m_tp = tp;
+                move();
+            }
+            public override void move()
+            {
+                Random rand = new Random(DateTime.Now.Second);
+                do
+                {
+                    x = rand.Next(11) * 40 + 80;
+                    y = rand.Next(11) * 40 + 80;
+                    bool overlap = false;
+                    foreach (var p in m_tp)
+                    {
+                        if (p.x == x && p.y == y)
+                        {
+                            overlap = true;
+                            break;
+                        }
+                    }
+                    if (!overlap)
+                        break;
+                } while (true);
+
+            }
+        }
+
+
+
     }
 }
